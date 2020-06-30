@@ -1,4 +1,4 @@
-package util;
+package Function;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -11,10 +11,10 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import DataBase.Constants;
+
 /**
  * Utility functions for the SonarProcessing file
- * 
- * @author Pyojeong Kim, Mitali Chowdhury
  *
  */
 public class Util {
@@ -82,10 +82,25 @@ public class Util {
 		float sec = min * 60;
 		min = (sec - sec % 60) / 60;
 		sec = sec - min * 60;
-		String Degree_Min_Sec = degree + "Â°" + min + "'" + sec + "''";
+		String Degree_Min_Sec = degree + "°" + min + "'" + sec + "''";
 		return Degree_Min_Sec;
 	}
 
+	public static String[][] trimNull(String[][] vals) {
+		int i = 0; 
+		while (vals[i][0] == null && i < vals.length)
+			i++;
+		int start = i;
+		i = vals.length - 1;
+		while (vals[i][0] == null && i > 0)
+			i--;
+		int end = i;
+		String[][] hold = new String[end - start + 1][vals[0].length];
+		for (i = start; i <= end; i++) 
+			hold[i - start] = vals[i];
+		return hold;
+	}
+	
 	/**
 	 * Combine left and right channels
 	 * 

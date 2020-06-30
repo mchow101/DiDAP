@@ -1,9 +1,9 @@
-package database;
+package DataBase;
 
 import java.util.ArrayList;
 
-import util.Constants;
-import util.Util;
+import DataBase.Constants;
+import Function.Util;
 
 public class Runner {
 	private static int counter = 0;

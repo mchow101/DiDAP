@@ -37,7 +37,7 @@ public class Master {
 		display = false;
 		csv = ImageArrEdit.colorReduction(vals, dark);
 		
-		System.out.println("start");
+		System.out.print("-");
 		
 		return process(csv);
 	}
@@ -94,7 +94,7 @@ public class Master {
 		Cluster.init(tmap, weight, cenN);
 		Cluster.process();
 		
-		if(display) Window.display(file, cenN, "Topograph");
+		if(display) Window.display(file, cenN, "Topograph", false);
 	
 		return Cluster.tmap;
 	}
@@ -112,7 +112,7 @@ public class Master {
 		Cluster.init(tmap, 0, cenN);
 		Cluster.process();
 		
-		if(display) Window.display(file, cenN, "Plane");
+		if(display) Window.display(file, cenN, "Plane", false);
 		
 		return Cluster.tmap;
 	}
@@ -131,7 +131,7 @@ public class Master {
 		Scan.init(tmap, epsilon, minP);
 		Scan.process();
 		
-		if(display) Window.display(file, Scan.cenN, "Scan");
+		if(display) Window.display(file, Scan.cenN, "Scan", false);
 		
 		return Scan.tmap;
 	}
@@ -149,7 +149,7 @@ public class Master {
 		Sift.init(tmap, cenN);
 		Sift.colorSelect(Sift.maxColor());
 		
-		if(display) Window.display(file, cenN, "Color Reduce");
+		if(display) Window.display(file, cenN, "Color Reduce", false);
 		
 		return Sift.map;
 	}
@@ -169,7 +169,7 @@ public class Master {
 		Polish.cut(3, 1);
 		Polish.cut(2, 1);
 
-		if (display) Window.display(file, 1, "Cut");
+		if (display) Window.display(file, 1, "Cut", false);
 
 		return Polish.rmap;
 	}
@@ -187,7 +187,7 @@ public class Master {
 		Box.init(bmap, exp);
 		Box.process();
 		
-		if (display) Window.display(file, 1, "Box");
+		if (display) Window.display(file, 1, "Box", true);
 
 		return Box.bmap;
 	}

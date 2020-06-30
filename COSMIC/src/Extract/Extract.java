@@ -1,14 +1,14 @@
-package database;
-
+package Extract;
+ 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
-import util.Util;
+import Function.Util;
 
-public class ExtractDB {
+public class Extract {
 
 	// Initialize values
 	// Extraction variables
@@ -71,14 +71,6 @@ public class ExtractDB {
 	private static byte[][] right;
 	private static byte[][] left;
 	private static String[][] fileHeader;
-	
-	// Transfer variables
-	private static String[][] metaData;
-	private static byte[][] image;
-	public static String im1;
-	public static String im2;
-	private static boolean metaAvailable;
-	
 
 	/**
 	 * Initialize for a file
@@ -209,25 +201,22 @@ public class ExtractDB {
 		y = (Util.remPath(x.substring(0, x.length() - Util.remPath(x).length() - 1)));
 
 		// Check if not MSTIFF
-		if (!fileInit(x)) {
+		if (!Extract.fileInit(x)) {
 			System.out.println(x + " is not an MSTIFF file.");
 			return false;
 		}
 
 		// Extract data
-		imageInit();
-		metaInit();
+		Extract.imageInit();
+		Extract.metaInit();
 
 		// Check if first
 		if (imTemp == null)
 			init();
-		
+
 		// Save if last of mission
-		metaAvailable = false;
-		if(!y.equals(lastFile) && !lastFile.equals("empty")) {
+		if (!y.equals(lastFile) && !lastFile.equals("empty"))
 			saveMeta();
-			metaAvailable = true;
-		}
 
 		// Add all metadata to array
 		int i;
@@ -236,7 +225,7 @@ public class ExtractDB {
 		for (i = 0; i < Nav_Real_Count; i++) {
 			for (int j = 0; j < FathometerCount; j++) {
 				if (Math.abs(Nav_timestamp_sec[i] - Fatho_timestamp_sec[j]) <= 3) {
-					Data[Data_Count][0] = "" + Util.remPath(x);
+					Data[Data_Count][0] = "" + x;
 					Data[Data_Count][1] = "" + Y2K_Date;
 					Data[Data_Count][2] = Util.JulianToTime(Nav_timestamp_sec[i]);
 					Data[Data_Count][3] = Util.JulianToTime(Fatho_timestamp_sec[j]);
@@ -250,25 +239,20 @@ public class ExtractDB {
 			}
 		}
 
-		Data = Util.trimNull(Data);
-		
 		// Combine left and right channels, previous image
 		if (imTemp.length != 0) {
 			imTemp = Util.combineVertically(imTemp, Util.combineHorizontally(left, right));
-			im1 = im2;
-			im2 = Data[0][0];
 			saveIm();
 			imTemp = Util.combineHorizontally(left, right);
 		} else {
 			imTemp = Util.combineHorizontally(left, right);
-			im2 = Data[0][0];
 		}
 
 		// Add metadata to growing table
-		if (metaTemp.length != 0) 
+		if (metaTemp.length != 0)
 			metaTemp = Util.combineVertically(metaTemp, Data);
 		else
-			metaTemp = Data;
+			metaTemp = Util.combineVertically(fileHeader, Data);
 
 		lastFile = y;
 		return true;
@@ -278,37 +262,19 @@ public class ExtractDB {
 	 * Save image
 	 */
 	public static void saveIm() {
-		image = imTemp;
+		Util.saveIm(imTemp, "im" + count);
 		System.out.println(count);
 		count++;
 	}
 
-	public static byte[][] getImage() {
-		return image;
-	}
-	
 	/**
 	 * Save metadata as CSV
 	 */
 	public static void saveMeta() {
+		// Util.saveIm(imTemp, "im" + count);
 		imTemp = new byte[0][0];
-		im1 = null;
-		im2 = null;
-		metaData = metaTemp;
+		Util.save(metaTemp, lastFile + "META");
 		metaTemp = new String[0][0];
-	}
-	
-	public static String getHeader() {
-		return "Filename varchar(128), Date0 number, NavTime varchar(8), "
-				+ " FaTime varchar(8), Latitude number, Longitude number, WaterDepth number, TowfishDepth number";
-	}
-	
-	public static boolean getMetaAvailable() {
-		return metaAvailable;
-	}
-	
-	public static String[][] getMeta() {
-		return metaData;
 	}
 
 	/**

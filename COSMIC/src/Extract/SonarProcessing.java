@@ -1,4 +1,4 @@
-package data;
+package Extract;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,8 +10,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import util.Constants;
-import util.Util;
+import Function.Constants;
+import Function.Util;
 
 /**
  * Main Processing file

@@ -41,7 +41,7 @@ public class Convert {
 	 */
 	public static double[][] convertImageCompress(String name, int scale) throws IOException {
 		
-		BufferedImage image = ImageIO.read(new File("COSMIC/Images/" + name));
+		BufferedImage image = ImageIO.read(new File((name.indexOf("\\") == -1 ? "COSMIC/Images/" : "") + name));
 		SimplePicture pic = new SimplePicture(image);
 		Pixel[][] arr = pic.getPixels2D();
 		double[][] out = new double[arr.length / scale][arr[0].length / scale];
