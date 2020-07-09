@@ -8,8 +8,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import Client.Runner;
 import FrameProcess.*;
 import Function.*;
+import Function.Constants.Save;
+import Function.Constants.Stage;
 
 /**
  * Display steps of processing
@@ -25,20 +28,27 @@ public class Window {
 	 * @param file 
 	 * @param arr
 	 * @param cenN
-	 * @param type window location
+	 * @param loc window location
 	 */
-	public static void create(String name, String file, int[][] arr, int cenN, int type, boolean save) {
-		name = name + " " + count++;
+	public static void create(String name, String file, int[][] arr, int cenN, int loc, Save save, boolean fin) {
+		if (save == Save.NO_DISPLAY || (save == Save.DISPLAY_FINAL && !fin)) return;
+		
+//		name = name + " " + count++;
 		Frame p = new Frame(name);
 		p.pane.draw(file, arr, cenN);
 		
-		if (save) p.capture(name);
+		if (save == Save.SAVE_ALL || (save == Save.SAVE_FINAL && fin)) p.capture(name);
 		
-		int x = 625*((type - 1)%4);
-		int y = type <= 3 ? 0 : 700;
+		int x = 0;
+		int y = 0;
+		
+		if (save == Save.DISPLAY_ALL) {
+			x = Constants.dim * ((loc - 1)%3);
+			y = loc <= 3 ? 0 : Constants.dim;
+		}
 		p.setLocation(x, y);
 		
-		if (!save) { 
+		if (save == Save.SAVE_FINAL && !fin) { 
 			double time = System.currentTimeMillis();
 			while(System.currentTimeMillis() - time < 100)
 				continue;
@@ -50,20 +60,36 @@ public class Window {
 	 * Show step in window
 	 * @param file
 	 * @param cenN
-	 * @param name
+	 * @param stage
+	 * @param save
 	 */
-	public static void display(String file, int cenN, String name, boolean save) {
+	public static void display(String file, int cenN, Stage stage, Save save) {
+		if (save == Save.NO_DISPLAY)
+			return;
 		
-		if (name.equals("Topograph") || name.equals("Plane"))
-			create(name, file, Format.cenArea(Cluster.tmap, Cluster.cens), cenN, name.equals("Topograph") ? 1 : 5, save);
-		if (name.equals("Scan"))
-			create(name, file, Format.Area(Scan.tmap), cenN, 6, save);
-		if (name.equals("Color Reduce"))
-			create(name, file, Format.blinkArea(Sift.map), cenN, 2, save);
-		if (name.equals("Cut"))
-			create(name, file, Format.blinkArea(Polish.rmap), 1, 7, save);
-		if (name.equals("Box"))
-			create(name, file, Format.boxArea(Box.bmap), cenN, 8, save);
+		switch (stage) {
+		case TOPOGRAPH: 
+			create(stage.toString() + " " + Util.getFileName(file), file, Format.cenArea(Cluster.tmap, Cluster.cens), cenN, 1, save, false);
+			break;
+		case PLANE:
+			create(stage.toString() + " " + Util.getFileName(file), file, Format.cenArea(Cluster.tmap, Cluster.cens), cenN, 5, save, false);
+			break;
+		case SCAN:
+			create(stage.toString() + " " + Util.getFileName(file), file, Format.Area(Scan.tmap), cenN, 6, save, false);
+			break;
+		case COLOR_REDUCE:
+			create(stage.toString() + " " + Util.getFileName(file), file, Format.blinkArea(Sift.map), cenN, 2, save, false);
+			break;
+		case CUT:
+			create(stage.toString() + " " + Util.getFileName(file), file, Format.blinkArea(Polish.rmap), 1, 7, save, false);
+			break;
+		case BOX:
+			create(stage.toString() + " " + Util.getFileName(file), file, Format.boxArea(Box.bmap), cenN, 8, save, true);
+			break;
+		case SLIDE:
+		default:
+			break;
+		}
 		
 	}
 	

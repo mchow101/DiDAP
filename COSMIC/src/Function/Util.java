@@ -11,8 +11,6 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import DataBase.Constants;
-
 /**
  * Utility functions for the SonarProcessing file
  *
@@ -215,7 +213,8 @@ public class Util {
 	 * @param label
 	 *            label to save as
 	 */
-	public static void saveIm(byte[][] arr, String label) {
+	public static String saveIm(byte[][] arr, String label, boolean sepia) {
+		String save = Constants.out_path + "\\" + label + ".png";
 		BufferedImage img = new BufferedImage(arr.length, arr[0].length, BufferedImage.TYPE_INT_RGB);
 		for (int x = 0; x < arr.length; x++) {
 			for (int y = 0; y < arr[0].length; y++) {
@@ -223,22 +222,29 @@ public class Util {
 				if (hold < 0)
 					hold = 256 + hold;
 				int val = hold >= 0 ? hold : 0;
-				// Transformation to sepia
-				int r = (int) ((val * .393) + (val * .769) + (val * .189));
-				r = r > 255 ? 255 : r;
-				int g = (int) ((val * .349) + (val * .686) + (val * .168));
-				g = g > 255 ? 255 : g;
-				int b = (int) ((val * .272) + (val * .534) + (val * .131));
-				b = b > 255 ? 255 : b;
-				img.setRGB(x, y, new Color(r, g, b).getRGB());
+				if (sepia) {
+					// Transformation to sepia
+					int r = (int) ((val * .393) + (val * .769) + (val * .189));
+					r = r > 255 ? 255 : r;
+					int g = (int) ((val * .349) + (val * .686) + (val * .168));
+					g = g > 255 ? 255 : g;
+					int b = (int) ((val * .272) + (val * .534) + (val * .131));
+					b = b > 255 ? 255 : b;
+					img.setRGB(x, y, new Color(r, g, b).getRGB());
+				} else {
+					img.setRGB(x, y, new Color(val, val, val).getRGB());
+				}
 			}
 		}
-		File out = new File(Constants.out_path + "\\image" + label + ".png");
+		
+		File out = new File(save);
 		try {
 			ImageIO.write(img, "png", out);
+			return save;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	/**
@@ -265,7 +271,7 @@ public class Util {
 			}
 			writer.write(sb.toString());
 
-			System.out.println("Saved " + label);
+			System.out.println("Saved " + Constants.out_path + "\\data" + label + ".csv");
 
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
@@ -334,6 +340,16 @@ public class Util {
 	}
 
 	/**
+	 * Remove path prefix and file extension
+	 * @param file
+	 * @return
+	 */
+	public static String getFileName(String file) {
+		file = remPath(file);
+		file = file.substring(0, file.lastIndexOf("."));
+		return file;
+	}
+	/**
 	 * Surrounds string with single quotes
 	 * 
 	 * @param s
@@ -343,4 +359,5 @@ public class Util {
 	public static String addSingQuote(String s) {
 		return "'" + s + "'";
 	}
+
 }

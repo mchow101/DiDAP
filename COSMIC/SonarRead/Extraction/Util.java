@@ -3,8 +3,10 @@ package Extraction;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -137,6 +139,32 @@ public class Util {
 		return hold;
 	}
 
+	public static void saveRaw(byte[][] arr, String label) {
+
+		try (FileOutputStream fos = new FileOutputStream("D:\\Mitali\\ML\\NPS20\\" + label)) {
+			   System.out.println(label);
+			   for (byte[] a : arr) 
+				   fos.write(a);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+//		try (PrintWriter writer = new PrintWriter(new File("D:\\Mitali\\ML\\NPS20\\" + label))) {
+//			StringBuilder sb = new StringBuilder();
+//
+//			for (int j = 0; j < arr.length; j++) {
+//				for (int k = 0; k < arr[0].length; k++) {
+//					sb.append(arr[j][k]);
+//				}
+//				sb.append('\n');
+//			}
+//			writer.write(sb.toString());
+//
+//			System.out.println("Saved " + label);
+//		} catch (FileNotFoundException e) {
+//			System.out.println(e.getMessage());
+//		}
+	}
+	
 	/**
 	 * Save a 2D array to a CSV
 	 * 
@@ -196,6 +224,7 @@ public class Util {
 
 	public static void saveIm(byte[][] arr, String label) throws IOException {
 		// Write image to png file
+		System.out.println(arr[0][0]);
 		BufferedImage img = new BufferedImage(arr.length, arr[0].length, BufferedImage.TYPE_INT_RGB);
 		for (int x = 0; x < arr.length; x++) {
 			for (int y = 0; y < arr[0].length; y++) {
@@ -205,7 +234,7 @@ public class Util {
 				img.setRGB(x, y, new Color(val, val, val).getRGB());
 			}
 		}
-		File out = new File("D:\\Mitali\\ML\\NPS19\\data_csv\\extract\\image" + label + ".png");
+		File out = new File("D:\\Mitali\\ML\\NPS20\\" + label + ".png");
 		ImageIO.write(img, "png", out);
 //		Master.findMine("D:\\Mitali\\ML\\NPS19\\data_csv\\extract\\image" + label + ".png");
 	}

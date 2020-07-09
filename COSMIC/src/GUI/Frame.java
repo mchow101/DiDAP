@@ -15,7 +15,8 @@ public class Frame extends JFrame implements Runnable {
 
 	public WindowPanel pane;
 	Container content;
-	public int dim = 600;
+	static int w;
+	static int h;
 	double widthR;
 	double heightR;
 
@@ -32,7 +33,8 @@ public class Frame extends JFrame implements Runnable {
 		// frame = new JFrame(name);
 		setTitle(name);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(dim + 17, dim + 68);
+//		setSize(dim + 17, dim + 68);
+		setSize(w + 40, h + 40);
 
 		pane = new WindowPanel();
 
@@ -40,6 +42,11 @@ public class Frame extends JFrame implements Runnable {
 		setVisible(true);
 	}
 
+	public static void setDimensions(int width, int height) {
+		w = width < height ? Constants.dim : (int) (((double) (width) / height) * Constants.dim);
+		h = height < width ? Constants.dim : (int) (((double) (height) / width) * Constants.dim);
+	}
+	
 	@Override
 	public void run() {
 
@@ -84,8 +91,8 @@ public class Frame extends JFrame implements Runnable {
 			arr = arrSet;
 			cenN = cenNSet;
 
-			widthR = 1.0 * dim / arr[0].length;
-			heightR = 1.0 * dim / arr.length;
+			widthR = 1.0 * w / arr[0].length;
+			heightR = 1.0 * h / arr.length;
 
 			repaint();
 		}
@@ -96,9 +103,7 @@ public class Frame extends JFrame implements Runnable {
 		public void addFullSizeImage(Graphics g, String imageName) {
 
 			Image image = Toolkit.getDefaultToolkit().getImage((imageName.indexOf("\\") == -1 ? "COSMIC/Images/" : "") + imageName);
-			int width = dim;
-			int height = dim;
-			g.drawImage(image, 0, 0, width, height, this);
+			g.drawImage(image, 0, 0, w, h, this);
 		}
 
 		public void drawOutline(Graphics g, int[][] arr, int cenN) {
@@ -140,11 +145,11 @@ public class Frame extends JFrame implements Runnable {
 		 * @param c
 		 */
 		public void refitRect(Graphics g, int r, int c) {
-
 			int tempX = refit(c, widthR);
 			int tempY = refit(r, heightR);
 			int dX = refit(c + 1, widthR) - refit(c, widthR);
 			int dY = refit(r + 1, heightR) - refit(r, heightR);
+//			System.out.println(tempX + " " + tempY + " " + dX + " " + dY);
 			g.fillRect(tempX, tempY, dX, dY);
 		}
 

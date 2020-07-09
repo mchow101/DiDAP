@@ -4,6 +4,11 @@ import DataStorage.*;
 
 public class Converter {
 
+	/** 
+	 * Converts doubles to LightPoints
+	 * @param vals double array
+	 * @return LightPoint array
+	 */
 	public static LightPoint[][] convert(double[][] vals) {
 		
 		LightPoint[][] send = new LightPoint[vals.length][vals[0].length];
@@ -15,6 +20,11 @@ public class Converter {
 		return send;
 	}
 	
+	/**
+	 * Converts LightPoints to booleans
+	 * @param map LightPoint array
+	 * @return boolean array
+	 */
 	public static boolean[][] convert(LightPoint[][] map) {
 		
 		boolean[][] send = new boolean[map.length][map[0].length];
@@ -26,6 +36,11 @@ public class Converter {
 		return send;
 	}
 	
+	/**
+	 * Reduces LightPoint array to binary luminesence
+	 * @param map LightPoint array
+	 * @return reduced LightPoint array
+	 */
 	public static LightPoint[][] reduce(LightPoint[][] map) {
 		
 		LightPoint[][] send = new LightPoint[map.length][map[0].length];
@@ -37,6 +52,11 @@ public class Converter {
 		return send;
 	}
 	
+	/**
+	 * Reduces LightPoint array to binary tags
+	 * @param map LightPoint array
+	 * @return reduced LightPoint array
+	 */
 	public static LightPoint[][] scanReduce(LightPoint[][] map) {
 		
 		LightPoint[][] send = new LightPoint[map.length][map[0].length];

@@ -469,6 +469,7 @@ public class SonarProcessing {
 	public static void main(String[] args) throws IOException {
 		// Change dir to match folder
 		// Cycle through all files in the directory
+		/*
 		String dir = "D:\\Mitali\\ML\\NPS19\\NEEMO_18_Sidescan_Data\\";
 		ArrayList<String> totalFileList = new ArrayList<String>();
 		File test = new File(dir);
@@ -497,6 +498,8 @@ public class SonarProcessing {
 		} else {
 			System.out.println("There is no folder.");
 		}
+		*/
+		String[] totalFileList = { "D:\\Mitali\\ML\\NPS19\\MOD1_Data\\131119_1\\REMUS025.mst" };
 
 		byte[][] imTemp = new byte[0][0];
 		String[][] metaTemp = new String[0][0];
@@ -531,6 +534,7 @@ public class SonarProcessing {
 			byte[][] right = getChannel2("2C01");
 			byte[][] left = getChannel2("2B01");
 
+			/*
 			// Metadata
 			NavinfoCount = getData("0A01");
 			FathometerCount = getData("1E01");
@@ -559,7 +563,6 @@ public class SonarProcessing {
 					}
 				}
 			}
-
 			if (imTemp.length != 0) {
 				imTemp = Util.combineVertically(imTemp, Util.combineHorizontally(left, right));
 				Util.saveIm(imTemp, "im" + count);
@@ -585,14 +588,20 @@ public class SonarProcessing {
 					Util.save(metaTemp, lastFile + "META");
 				}
 				lastFile = y;
-			}
+			} */
+			imTemp = Util.combineHorizontally(left, right);
+			System.out.println(imTemp.length + " " + imTemp[0].length);
+			Util.saveRaw(imTemp, "testimage");
+			Util.saveIm(imTemp, "test");
 		}
+		/*
 		System.out.println("SAVING " + y);
 		Util.saveIm(imTemp, lastFile);
 		imTemp = new byte[0][0];
 		metaTemp = Util.combineVertically(fileHeader, metaTemp); // adds file header to the csv
 		Util.save(metaTemp, lastFile + "META");
-		
+		*/
 		System.out.println("Finished with all");
+	
 	}
 }

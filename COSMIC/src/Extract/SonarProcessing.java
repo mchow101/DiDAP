@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 import Function.Constants;
 import Function.Util;
+import Function.Constants.Save;
 
 /**
  * Main Processing file
@@ -26,7 +27,7 @@ public class SonarProcessing {
 
 		// Extract data from each file
 		for (String x : totalFileList) 
-			Extract.fileProcess(x);
+			Extract.fileProcess(x, Save.SAVE_ALL);
 		Extract.saveMeta();
 		System.out.println("Finished with all");
 	}

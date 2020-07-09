@@ -5,8 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import Extract.Process;
 import Function.ColorEdit;
+import Function.Constants;
+import Function.Constants.Save;
 import Function.Format;
+import Function.Util;
 import GUI.Window;
 import Image.ImageArrEdit;
 import MacroProcess.Slide;
@@ -15,36 +19,60 @@ import MacroProcess.Slide;
  * @author Seth Knoop, Pyojeong Kim, Mitali Chowdhury
  *
  */
-public class Runner {
 
+public class Runner {
 	public static void main(String[] args) throws IOException {
-		ArrayList<String> files = Function.Util.findAllFiles(Function.Constants.in_path,
-				"png");
-//		int[] images = { 54, 87, 129, 153, 351, 468, 474, 183, 273 };
-		for (int i = 0; i < files.size(); i++) {
-			System.out.println("Image: " + files.get(i));
-			slide(files.get(i));
+		// test();
+		// slide("D:\\Mitali\\ML\\NPS20\\test\\Slide 129.png");
+		// int[] images = { 54, 87, 129, 153, 351, 468, 474, 183, 273 };
+		processDir();
+	}
+
+	public static void processDir() {
+		// Cycle through all files in the directory
+		String dir = Constants.in_path;
+		ArrayList<String> mstFiles = Util.findAllFiles(dir, "mst");
+		ArrayList<String> pngFiles = Util.findAllFiles(dir, "png");
+		
+		if (mstFiles.size() > pngFiles.size()) {
+			// Extract data from each file
+			for (String x : mstFiles) {
+				System.out.println("MSTIFF: " + x);
+				Process.fileProcess(x, Save.SAVE_FINAL);
+			}
+			Process.saveMeta();
+		} else {
+			for (String x : pngFiles) {
+				System.out.println("Image: " + x);
+				try {
+					// Process each file
+					slide(x);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-//		int i = 1;
-//		for (String file : files) {
-//			System.out.println("Image " + (3*i++) + ": " + file);
-//			slide(file);
-//		}
 	}
 
 	public static void test() throws IOException {
-		FrameProcess.Master.findMine("", true);
+		// for (double t = -6; t < 0; t += 0.1) {
+		// test = Math.round(t * 10) / 10.0;
+		//// System.out.println(test);
+		// for(int i = 1; i < 8; i++)
+		// System.out.println(FrameProcess.Master.findMine("D:\\Mitali\\ML\\NPS20\\test\\smol"
+		// + i + ".png", true, Save.SAVE_FINAL));
+		// }
 		// FrameProcess.Master.findMine("sonar3.png", true);
 	}
 
 	public static void slide(String file) throws IOException {
-		MacroProcess.Master.findMine(file);
+		System.out.println(MacroProcess.Master.findMine(file, Save.SAVE_FINAL));
 	}
 
 	public static void image() throws IOException {
 
 		int[][] arr = new int[][] { { -2 } };
 
-		Window.create("Image", "sonar2.png", arr, 1, 1, true);
+		Window.create("Image", "sonar2.png", arr, 1, 1, Save.NO_DISPLAY, false);
 	}
 }

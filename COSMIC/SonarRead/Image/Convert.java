@@ -52,4 +52,18 @@ public class Convert {
 		}
 		return out;
 	}
+	
+	public static double[][] convertByte(byte[][] image) {
+		double[][] out = new double[image.length][image[0].length];
+		for (int x = 0; x < image.length; x++) {
+			for (int y = 0; y < image[0].length; y++) {
+				int hold = (int) ((image[x][y]));
+				if (hold < 0)
+					hold = 256 + hold;
+				int val = hold >= 0 ? hold : 0;
+				out[x][y] = val;
+			}
+		}
+		return out;
+	}
 }

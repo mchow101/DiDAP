@@ -1,12 +1,8 @@
-/Client/
-/DataStorage/
-/Extraction/
 /FrameProcess/
+/Client/
+/Extract/
 /Function/
 /GUI/
-/Image/
 /MacroProcess/
-/data_extract/
-/data_extract_db/
-/Extract/
+/Image/
 /DataBase/
