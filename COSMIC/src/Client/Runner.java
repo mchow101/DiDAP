@@ -23,8 +23,6 @@ import MacroProcess.Slide;
 public class Runner {
 	public static void main(String[] args) throws IOException {
 		// test();
-		// slide("D:\\Mitali\\ML\\NPS20\\test\\Slide 129.png");
-		// int[] images = { 54, 87, 129, 153, 351, 468, 474, 183, 273 };
 		processDir();
 	}
 
@@ -33,7 +31,7 @@ public class Runner {
 		String dir = Constants.in_path;
 		ArrayList<String> mstFiles = Util.findAllFiles(dir, "mst");
 		ArrayList<String> pngFiles = Util.findAllFiles(dir, "png");
-		
+
 		if (mstFiles.size() > pngFiles.size()) {
 			// Extract data from each file
 			for (String x : mstFiles) {
