@@ -2,7 +2,6 @@ package DataBase;
 
 import java.util.ArrayList;
 
-import DataBase.Constants;
 import Function.Util;
 
 public class Runner {
@@ -20,7 +19,7 @@ public class Runner {
 		DBMain.executeQuery("ALTER TABLE " + prefix + "images ADD file1 VARCHAR(50)");
 		DBMain.executeQuery("ALTER TABLE " + prefix + "images ADD file2 VARCHAR(50)");
 //		DBMain.createTable(prefix + "mines", "filename VARCHAR(50)", false, false);
-		ArrayList<String> files = Util.findAllFiles(Constants.in_path, "mst");
+		ArrayList<String> files = Util.findAllFiles(Function.Constants.in_path, "mst");
 		for (String file : files) {
 			ExtractDB.fileProcess(file);
 			if (ExtractDB.getMetaAvailable())

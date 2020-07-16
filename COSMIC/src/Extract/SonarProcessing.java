@@ -27,8 +27,8 @@ public class SonarProcessing {
 
 		// Extract data from each file
 		for (String x : totalFileList) 
-			Extract.fileProcess(x, Save.SAVE_ALL);
-		Extract.saveMeta();
+			Process.fileProcess(x, Save.SAVE_ALL);
+		Process.saveMeta();
 		System.out.println("Finished with all");
 	}
 }
