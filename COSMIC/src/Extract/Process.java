@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import Function.Util;
-import Function.Constants.Save;
 import Extract.Vars.*;
 
 public class Process {
@@ -134,13 +133,9 @@ public class Process {
 	 * Save image
 	 * @throws IOException 
 	 */
-	public static void saveIm(Save save) throws IOException {
-		if (save == Save.SAVE_ALL) 
-			Util.saveIm(Vars.imTemp, "im" + Vars.count, false);
-		else 
-			MacroProcess.Master.findMine(Util.saveIm(Vars.imTemp, "im" + Vars.count, false), save);
-		System.out.println(Vars.count);
-		Vars.count++;
+	public static void processIm() throws IOException {
+		System.out.println(MacroProcess.Master.findMine(Vars.imTemp, "im" + Vars.count));
+		System.out.println(Vars.count++);
 	}
 
 	/**
@@ -158,8 +153,9 @@ public class Process {
 	 * @param x
 	 *            file name
 	 * @return sucessful
+	 * @throws IOException 
 	 */
-	public static boolean fileProcess(String x, Save save) {
+	public static boolean fileProcess(String x) throws IOException {
 		// Get mission number from file path
 		Vars.y = (Util.remPath(x.substring(0, x.length() - Util.remPath(x).length() - 1)));
 
@@ -205,11 +201,7 @@ public class Process {
 		// Combine left and right channels, previous image
 		if (Vars.imTemp.length != 0) {
 			Vars.imTemp = Util.combineVertically(Vars.imTemp, Util.combineHorizontally(Vars.left, Vars.right));
-			try {
-				saveIm(save);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			processIm();
 			Vars.imTemp = Util.combineHorizontally(Vars.left, Vars.right);
 		} else {
 			Vars.imTemp = Util.combineHorizontally(Vars.left, Vars.right);

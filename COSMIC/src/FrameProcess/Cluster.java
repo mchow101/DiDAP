@@ -1,7 +1,6 @@
 package FrameProcess;
 
 import DataStorage.*;
-import GUI.Window;
 
 /**
  * K-means Clustering

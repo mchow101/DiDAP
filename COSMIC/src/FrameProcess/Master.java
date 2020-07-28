@@ -6,10 +6,8 @@ import java.io.IOException;
 
 import Client.Runner;
 import DataStorage.*;
-import GUI.*;
 import Image.ImageArrEdit;
 import Function.*;
-import Function.Constants.Save;
 import Function.Constants.Stage;
 
 /**
@@ -21,27 +19,22 @@ public class Master {
 	static String file;
 	static double[][] csv;
 
-	static Save save;
 	static boolean dark;
 
-	public static boolean findMine(String fileSet, boolean darkSet, Save saveSet) throws IOException {
+	public static boolean findMine(String fileSet, boolean darkSet) throws IOException {
 
 		file = fileSet;
 		dark = darkSet;
-		save = saveSet;
 		csv = ImageArrEdit.colorReduction(ImageArrEdit.fileRead(file), dark);
-
-		Frame.setDimensions(csv[0].length, csv.length);
 
 		System.out.println("start");
 
 		return process(csv);
 	}
 
-	public static boolean findMine(double[][] vals, boolean darkSet, Save saveSet) {
+	public static boolean findMine(double[][] vals, boolean darkSet) {
 
 		dark = darkSet;
-		save = saveSet;
 		csv = ImageArrEdit.colorReduction(vals, dark);
 
 		System.out.print("-");
@@ -83,13 +76,8 @@ public class Master {
 	 */
 	public static LightPoint[][] Topograph(LightPoint[][] tmap, int weight, int cenN) {
 
-		if (save == Save.DISPLAY_ALL)
-			System.out.println("Topograph");
-
 		Cluster.init(tmap, weight, cenN);
 		Cluster.process();
-
-		Window.display(file, cenN, Stage.TOPOGRAPH, save);
 
 		return Cluster.tmap;
 	}
@@ -103,13 +91,8 @@ public class Master {
 	 */
 	public static LightPoint[][] Plane(LightPoint[][] tmap, int cenN) {
 
-		if (save == Save.DISPLAY_ALL)
-			System.out.println("Plane");
-
 		Cluster.init(tmap, 0, cenN);
 		Cluster.process();
-
-		Window.display(file, cenN, Stage.PLANE, save);
 
 		return Cluster.tmap;
 	}
@@ -124,13 +107,8 @@ public class Master {
 	 */
 	public static LightPoint[][] Scan(LightPoint[][] tmap, double epsilon, double minP) {
 
-		if (save == Save.DISPLAY_ALL)
-			System.out.println("Scan");
-
 		Scan.init(tmap, epsilon, minP);
 		Scan.process();
-
-		Window.display(file, Scan.cenN, Stage.SCAN, save);
 
 		return Scan.tmap;
 	}
@@ -144,13 +122,8 @@ public class Master {
 	 */
 	public static LightPoint[][] ColorReduce(LightPoint[][] tmap, int cenN) {
 
-		if (save == Save.DISPLAY_ALL)
-			System.out.println("Color Reduce");
-
 		Sift.init(tmap, cenN);
 		Sift.colorSelect(Sift.maxColor());
-
-		Window.display(file, cenN, Stage.COLOR_REDUCE, save);
 
 		return Sift.map;
 	}
@@ -163,16 +136,11 @@ public class Master {
 	 */
 	public static LightPoint[][] Cut(LightPoint[][] rmap) {
 
-		if (save == Save.DISPLAY_ALL)
-			System.out.println("Cut");
-
 		Polish.init(rmap);
 		Polish.cut(6, 1.5);
 		Polish.cut(3, 1);
 		Polish.cut(3, 1);
 		Polish.cut(2, 1);
-
-		Window.display(file, 1, Stage.CUT, save);
 
 		return Polish.rmap;
 	}
@@ -186,13 +154,8 @@ public class Master {
 	 */
 	public static boolean[][] Box(boolean bmap[][], int exp) {
 
-		if (save == Save.DISPLAY_ALL || save == Save.DISPLAY_FINAL)
-			System.out.println("Box");
-
 		Box.init(bmap, exp);
 		Box.process();
-
-		Window.display(file, 1, Stage.BOX, save);
 
 		return Box.bmap;
 	}

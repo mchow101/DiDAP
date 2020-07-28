@@ -2,10 +2,8 @@ package Function;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -204,7 +202,20 @@ public class Util {
 		}
 		return hold;
 	}
-
+	
+	/**
+	 * Transform byte to integer value
+	 * @param z
+	 * @return
+	 */
+	public static int getByteVal(byte z) {
+		int hold = (int) (z);
+		if (hold < 0)
+			hold = 256 + hold;
+		int val = hold >= 0 ? hold : 0;
+		return val;
+	}
+	
 	/**
 	 * Write image to png file
 	 * 
@@ -218,10 +229,46 @@ public class Util {
 		BufferedImage img = new BufferedImage(arr.length, arr[0].length, BufferedImage.TYPE_INT_RGB);
 		for (int x = 0; x < arr.length; x++) {
 			for (int y = 0; y < arr[0].length; y++) {
-				int hold = (int) ((arr[x][y]));
-				if (hold < 0)
-					hold = 256 + hold;
-				int val = hold >= 0 ? hold : 0;
+				int val = getByteVal(arr[x][y]);
+				if (sepia) {
+					// Transformation to sepia
+					int r = (int) ((val * .393) + (val * .769) + (val * .189));
+					r = r > 255 ? 255 : r;
+					int g = (int) ((val * .349) + (val * .686) + (val * .168));
+					g = g > 255 ? 255 : g;
+					int b = (int) ((val * .272) + (val * .534) + (val * .131));
+					b = b > 255 ? 255 : b;
+					img.setRGB(x, y, new Color(r, g, b).getRGB());
+				} else {
+					img.setRGB(x, y, new Color(val, val, val).getRGB());
+				}
+			}
+		}
+		
+		File out = new File(save);
+		try {
+			ImageIO.write(img, "png", out);
+			return save;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Write image to png file
+	 * 
+	 * @param arr
+	 *            integer array for image
+	 * @param label
+	 *            label to save as
+	 */
+	public static String saveIm(int[][] arr, String label, boolean sepia) {
+		String save = Constants.out_path + "\\" + label + ".png";
+		BufferedImage img = new BufferedImage(arr.length, arr[0].length, BufferedImage.TYPE_INT_RGB);
+		for (int x = 0; x < arr.length; x++) {
+			for (int y = 0; y < arr[0].length; y++) {
+				int val = arr[x][y];
 				if (sepia) {
 					// Transformation to sepia
 					int r = (int) ((val * .393) + (val * .769) + (val * .189));
@@ -276,6 +323,34 @@ public class Util {
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
+	}
+	
+	/**
+	 * Scale two similar arrays and check if point pR, pC from im is in sector r, c from map
+	 * @param r
+	 * @param r sector in map along width
+	 * @param c sector in map along height
+	 * @param mapW map width
+	 * @param mapH map height
+	 * @param imW image width
+	 * @param imH image height
+	 * @return x1, y1, x2, y2
+	 */
+	public static int[] refitRect(int r, int c, double mapW, double mapH, double imW, double imH) {
+		double widthR = 1.0 * imW / mapW;
+		double heightR = 1.0 * imH / mapH;
+		int tempX = refit(c, widthR);
+		int tempY = refit(r, heightR);
+		int dX = refit(c + 1, widthR) - refit(c, widthR);
+		int dY = refit(r + 1, heightR) - refit(r, heightR);
+//		System.out.println(tempX + " " + tempY + " " + dX + " " + dY);
+		
+		return new int[] { tempX, tempY, tempX + dX, tempY + dY };
+	}
+
+	public static int refit(int pos, double ratio) {
+
+		return (int) Math.round((pos * ratio));
 	}
 
 	/**

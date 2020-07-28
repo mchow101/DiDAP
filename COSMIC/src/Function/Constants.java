@@ -14,14 +14,7 @@ public class Constants {
 	/**
 	 * Change this to match your file input directory
 	 */
-	public static final String in_path =  "D:\\Mitali\\ML\\NPS20\\test\\mstiff";
-
-	/**
-	 * Save mode for mine outputs
-	 */
-	public enum Save { /** save all images */ SAVE_ALL, /** save final output */ SAVE_FINAL, 
-		/** display all images */ DISPLAY_ALL, /** display final output */ DISPLAY_FINAL, 
-		/** do not display output */ NO_DISPLAY };
+	public static final String in_path =  "D:\\Mitali\\ML\\NPS20\\mstiff";
 		
 	/**
 	 * Type of image processing stage

@@ -2,9 +2,8 @@ package MacroProcess;
 
 import java.io.IOException;
 
-import Function.Constants.Save;
 import Function.Format;
-import GUI.Window;
+import Function.Util;
 
 /**
  * Main class for large images
@@ -12,44 +11,51 @@ import GUI.Window;
  */
 public class Master {
 
-	static String file;
+	static byte[][] im;
 	static String name;
-	static Save save;
 	static int dim = 200;
 
-	public static boolean findMine(String fileSet, Save saveSet) throws IOException {
-		init(fileSet, saveSet);
+	public static boolean findMine(byte[][] imTemp, String nameSet) throws IOException {
+		init(imTemp, nameSet);
 
 		boolean[][][] layers;
-		boolean[][] dark;
-		boolean[][] bright;
 		boolean[][] bmap;
 
-		Slide.init(file, dim, true);
+		Slide.init(im, dim, true);
 		layers = new boolean[2][Slide.bmap.length][Slide.bmap[0].length];
+		
+		Slide.process();
+		layers[0] = Slide.bmap;
+		
+		Slide.init(im, dim, false);
+		Slide.process();
+		layers[1] = Slide.bmap;
 
-		for (int i = 0; i < 2; i++) {
-			Slide.init(file, dim, i == 0);
-			Slide.process();
-
-			Window.create(name, file, Format.slideArea(Slide.bmap, Slide.vals, Slide.dim), 1, 1, save, false);
-			layers[i] = Slide.bmap;
-		}
-
+		byte[][] imOut = new byte[imTemp.length][imTemp[0].length];
+		
 		bmap = new boolean[layers[0].length][layers[0][0].length];
-		for (int r = 0; r < bmap.length; r++)
-			for (int c = 0; c < bmap[0].length; c++)
+		for (int r = 0; r < bmap.length; r++) {
+			for (int c = 0; c < bmap[0].length; c++) {
 				bmap[r][c] = layers[0][r][c] && layers[1][r][c];
-
-		Window.create(name, file, Format.slideArea(bmap, Slide.vals, Slide.dim), 1, 1, save, true);
-
+				int[] temp = Util.refitRect(r, c, bmap[0].length, bmap.length, imTemp[0].length, imTemp.length);
+				for (int x = temp[1]; x < (temp[3] < imTemp.length ? temp[3] : imTemp.length); x++) {
+					for (int y = temp[0]; y < (temp[2] < imTemp[0].length ? temp[2] : imTemp[0].length); y++) {
+						if (bmap[r][c]) imOut[x][y] = (byte)(Util.getByteVal(imTemp[x][y]) > 150 ? 255 : Util.getByteVal(imTemp[x][y]) + 100);
+						else imOut[x][y] = imTemp[x][y];
+//						System.out.println(x + " " + y);
+					}
+				}
+			}
+		}
+		
+		Util.saveIm(imOut, nameSet, false);
+		
 		return Function.Calc.containsTrue(bmap);
 	}
 
-	public static void init(String fileSet, Save saveSet) {
+	public static void init(byte[][] imSet, String nameSet) {
 
-		file = fileSet;
-		name = Function.Util.getFileName(file);
-		save = saveSet;
+		im = imSet;
+		name = nameSet;
 	}
 }

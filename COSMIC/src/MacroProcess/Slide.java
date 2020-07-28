@@ -2,9 +2,6 @@ package MacroProcess;
 
 import java.io.IOException;
 
-import Function.Constants.Save;
-import GUI.Frame;
-
 /**
  * Splits image into sections to check for mines
  *
@@ -15,7 +12,6 @@ public class Slide {
 
 	public static double[][] vals;
 
-	static String file;
 	public static int dim;
 
 	static boolean dark;
@@ -23,7 +19,7 @@ public class Slide {
 	/**
 	 * Initialize slide
 	 * 
-	 * @param fileSet
+	 * @param im
 	 *            filename
 	 * @param dimSet
 	 *            dimensions of square to scan at a time (pixels)
@@ -31,14 +27,12 @@ public class Slide {
 	 *            filter for dark spots or light spots
 	 * @throws IOException
 	 */
-	public static void init(String fileSet, int dimSet, boolean darkSet) throws IOException {
+	public static void init(byte[][] im, int dimSet, boolean darkSet) throws IOException {
 
-		file = fileSet;
+		vals = Image.Convert.convertByte(im);
 		dim = dimSet;
 		dark = darkSet;
 
-		vals = Image.Convert.convertImageCompress(file, 1);
-		Frame.setDimensions(vals[0].length, vals.length);
 		bmap = new boolean[(int) Math.ceil(1.0 * vals.length / dim)][(int) Math.ceil(1.0 * vals[0].length / dim)];
 	}
 	
@@ -59,7 +53,6 @@ public class Slide {
 		dark = darkSet;
 		vals = valSet;
 
-		Frame.setDimensions(vals[0].length, vals.length);
 		bmap = new boolean[(int) Math.ceil(1.0 * vals.length / dim)][(int) Math.ceil(1.0 * vals[0].length / dim)];
 	}
 
@@ -70,7 +63,7 @@ public class Slide {
 
 		for (int r = 0; r < bmap.length; r++)
 			for (int c = 0; c < bmap[0].length; c++)
-				bmap[r][c] = FrameProcess.Master.findMine(findSector(r, c), dark, Save.NO_DISPLAY);
+				bmap[r][c] = FrameProcess.Master.findMine(findSector(r, c), dark);
 	}
 
 	/**
