@@ -52,7 +52,12 @@ public class Convert {
 		}
 		return out;
 	}
-	
+	/**
+	 * Returns a double array of an image given the byte array
+	 * 
+	 * @param image
+	 * @return the 2D double array representing the image
+	 */
 	public static double[][] convertByte(byte[][] image) {
 		double[][] out = new double[image.length][image[0].length];
 		for (int x = 0; x < image.length; x++) {

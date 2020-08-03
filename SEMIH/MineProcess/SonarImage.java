@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
-//import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -55,8 +54,7 @@ public class SonarImage {
 	// also have the file be placed in the output folder
 	public static String basePath = "/home/cloudera/Documents/shared/MineProcess/output/";
 
-	// file count is attached to name of png to see if multiple pngs are being
-	// printed
+	// file count is attached to name of png
 	public static int count = 0;
 
 	// these paths don't seem to work. It seems like after the main function, the
@@ -65,21 +63,24 @@ public class SonarImage {
 	public static Path outPath;
 	
 	public static Configuration conf;
+	private static Job job;
 
+	// variables for storage of image data
 	public static byte[] bytes;
 	public static byte[][] right_bytes = null;
 	public static byte[][] left_bytes = null;
 	public static byte[][] image = null;
 	public static int bytes_length;
+	public static String lastkey;
 	public static String currentkey;
-	private static Job job;
 
 	/**
 	 * Mapper with: input key = file name (Text.class) 
 	 * input value = MSTIFF binary data (BytesWritable.class) 
 	 * 
 	 * output key = file name (Text.class) 
-	 * output value = image in byte form (BytesWritable.class)
+	 * output value = image with mine tagged in byte form (BytesWritable.class)
+	 * output also includes CSV files for metadata and image information
 	 */
 	public static class Sonar_Mapper extends Mapper<Text, BytesWritable, Text, Text> {
 
@@ -87,7 +88,6 @@ public class SonarImage {
 
 		public void setup(Context context) throws IOException, InterruptedException {
 			mos = new MultipleOutputs(context);
-
 		}
 
 		@Override
@@ -130,16 +130,15 @@ public class SonarImage {
 				boolean l = MacroMaster.findMine(temp, 'L');
 				left_bytes = Extract.imTempL;
 
-				System.out.println("Finished with all");
-
-				System.out.println("img label " + Util.imgLabel);
-
 				Configuration conf = new Configuration();
 				count++; // because count is updated before imgPath, count starts at 1
+				System.out.println("img number " + count);
+				
 				String imgPath = "im" + count + ".png";
-
 				String localPath = basePath + imgPath;
-
+				// writes image name, associated mstiff files, and whether the image contains a mine
+				mos.write("mines", imgPath, new Text(lastkey + ", " + currentkey + ", " + (r || l)));
+				
 				// https://stackoverflow.com/questions/17488534/create-a-file-from-a-bytearrayoutputstream
 				// http://codeinventions.blogspot.com/2014/08/creating-file-from-bytearrayoutputstrea.html
 				// https://stackoverflow.com/questions/16546040/store-images-videos-into-hadoop-hdfs
@@ -149,7 +148,7 @@ public class SonarImage {
 				FileSystem fs = FileSystem.get(conf);
 				SequenceFile.Writer writer = null;
 				try {
-					// convert Util.img into a byte array
+					// convert image into a byte array
 					baos = new ByteArrayOutputStream();
 					ImageIO.write(Util.getImage(Util.combineHorizontally(MacroMaster.imL, MacroMaster.imR), false), "png", baos);
 					byte[] imBytes = baos.toByteArray();
@@ -172,6 +171,7 @@ public class SonarImage {
 				// wipes imTemp
 				Extract.saveMeta();
 			}
+			lastkey = currentkey;
 		}
 
 		public void cleanup(Context context) throws IOException, InterruptedException {
@@ -231,7 +231,7 @@ public class SonarImage {
 		}
 
 		/**
-		 * reads next file
+		 * reads next mstiff file
 		 */
 		@Override
 		public boolean nextKeyValue() throws IOException, InterruptedException {
@@ -295,9 +295,10 @@ public class SonarImage {
 
 		job.setOutputKeyClass(Text.class);
 		
-		// set up 2 Hadoop jobs, one for metadata and one for sonar image
+		// set up 3 outputs, one for metadata, one for sonar image, and one for mine information
 		MultipleOutputs.addNamedOutput(job, "metadata", TextOutputFormat.class, Text.class, Text.class);
 		MultipleOutputs.addNamedOutput(job, "image", SequenceFileOutputFormat.class, Text.class, BytesWritable.class);
+		MultipleOutputs.addNamedOutput(job, "mines", TextOutputFormat.class, Text.class, Text.class);
 		job.setOutputKeyClass(Text.class);
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));

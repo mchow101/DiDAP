@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Hadoop with MapReduce, image only version
+ * Extracts image and metadata from MSTIFF 
  *
  */
 public class Extract { 

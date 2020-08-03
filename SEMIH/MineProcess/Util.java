@@ -161,34 +161,6 @@ public class Util {
 	}
 
 	/**
-	 * Save a 2D array to a CSV
-	 * 
-	 * @param arr
-	 *            array to save
-	 * @param label
-	 *            name to give file
-	 */
-//	public static void save(byte[][] arr, String label) {
-//		// Write metadata to CSV file
-//		try (PrintWriter writer = new PrintWriter(new File(Constants.out_path + "data" + label + ".csv"))) {
-//			StringBuilder sb = new StringBuilder();
-//
-//			for (int j = 0; j < arr.length; j++) {
-//				for (int k = 0; k < arr[0].length; k++) {
-//					sb.append(arr[j][k] + ",");
-//				}
-//				sb.append('\n');
-//			}
-//			writer.write(sb.toString());
-//
-//			System.out.println("Saved " + label);
-//
-//		} catch (FileNotFoundException e) {
-//			System.out.println(e.getMessage());
-//		}
-//	}
-
-	/**
 	 * Combines two string arrays
 	 * 
 	 * @param top
@@ -227,6 +199,9 @@ public class Util {
 		return val;
 	}
 	
+	/**
+	 * Transform byte array to BufferedImage
+	 */
 	public static BufferedImage getImage(byte[][] arr, boolean sepia) {
 		img = new BufferedImage(arr.length, arr[0].length, BufferedImage.TYPE_INT_RGB);
 		for (int x = 0; x < arr.length; x++) {
@@ -332,22 +307,7 @@ public class Util {
 	 *            name to give
 	 */
 	public static void save(String[][] arr, String label) {
-		// Write image or metadata to CSV file
-//		PrintWriter writer = new PrintWriter(new File( label + ".csv"));
-//
-//		StringBuilder sb = new StringBuilder();
-//
-//		for (int j = 0; j < arr.length; j++) {
-//			if (arr[j][0] != (null)) {
-//				for (int k = 0; k < arr[0].length; k++) {
-//					sb.append(arr[j][k] + ",");
-//				}
-//				sb.append('\n');
-//			}
-//		}
-//		writer.write(sb.toString());
-//
-//		System.out.println("Saved " + label);
+		// unused function
 	}
 	
 	/**
@@ -368,13 +328,13 @@ public class Util {
 		int tempY = refit(r, heightR);
 		int dX = refit(c + 1, widthR) - refit(c, widthR);
 		int dY = refit(r + 1, heightR) - refit(r, heightR);
-//		System.out.println(tempX + " " + tempY + " " + dX + " " + dY);
-		
 		return new int[] { tempX, tempY, tempX + dX, tempY + dY };
 	}
 
+	/**
+	 * Returns scaled point based on ratio
+	 */
 	public static int refit(int pos, double ratio) {
-
 		return (int) ((pos * ratio) + 0.5);
 	}
 
