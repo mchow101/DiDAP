@@ -227,16 +227,7 @@ public class Util {
 		return val;
 	}
 	
-	/**
-	 * Write image to png file
-	 * 
-	 * @param arr
-	 *            byte array for image
-	 * @param label
-	 *            label to save as
-	 */
-	public static String saveIm(byte[][] arr, String label, boolean sepia) {
-//		String save = Constants.out_path + "\\" + label + ".png";
+	public static BufferedImage getImage(byte[][] arr, boolean sepia) {
 		img = new BufferedImage(arr.length, arr[0].length, BufferedImage.TYPE_INT_RGB);
 		for (int x = 0; x < arr.length; x++) {
 			for (int y = 0; y < arr[0].length; y++) {
@@ -255,20 +246,31 @@ public class Util {
 				}
 			}
 		}
-
+		
 		// just info that's good to know
 		width = img.getWidth();
 	    height = img.getHeight();
 	    System.out.println("BufferedImage width: " + width);
 	    System.out.println("BufferedImage height: " + height);
 	    
+	    return img;
+	}
+	
+	/**
+	 * Write image to png file
+	 * 
+	 * @param arr
+	 *            byte array for image
+	 * @param label
+	 *            label to save as
+	 */
+	public static String saveIm(byte[][] arr, String label, boolean sepia) {
+//		String save = Constants.out_path + "\\" + label + ".png";
+		getImage(arr, sepia);
+	    
 		// copy label to public static variable imgLabel
-		imgLabel=label;
-		try {
-			System.out.println("Image saved in Util.saveIm!");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		imgLabel = label;
+		System.out.println("Image saved in Util.saveIm!");
 
 		return imgLabel;
 	}
@@ -281,6 +283,7 @@ public class Util {
 	 * @param label
 	 *            label to save as
 	 */
+	//TODO add getImage call
 	public static String saveIm(int[][] arr, String label, boolean sepia) {
 //		String save = Constants.out_path + "\\" + label + ".png";
 		img = new BufferedImage(arr.length, arr[0].length, BufferedImage.TYPE_INT_RGB);

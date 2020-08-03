@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 
 import java.io.IOException;
 
-import Client.Runner;
 import DataStorage.*;
 import Image.ImageArrEdit;
 import Function.*;
@@ -57,7 +56,7 @@ public class Master {
 		int cenN;
 
 		tmap = Converter.convert(vals);
-		double minP = dark ? 28.3 : 20;
+		double minP = dark ? 28.1 : 22.5;
 		rmap = Scan(tmap, 3, minP);
 		rmap = ColorReduce(rmap, Scan.cenN);
 		bmap = Converter.convert(rmap);

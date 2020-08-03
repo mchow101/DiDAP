@@ -29,7 +29,8 @@ public class Process {
 		Vars.fileHeader[0][6] = "WaterDepth";
 		Vars.fileHeader[0][7] = "TowfishDepth";
 
-		Vars.imTemp = new byte[0][0];
+		Vars.imTempL = new byte[0][0];
+		Vars.imTempR = new byte[0][0];
 		Vars.metaTemp = new String[0][0];
 		Vars.lastFile = "empty";
 		Vars.count = 0;
@@ -134,7 +135,9 @@ public class Process {
 	 * @throws IOException 
 	 */
 	public static void processIm() throws IOException {
-		System.out.println(MacroProcess.Master.findMine(Vars.imTemp, "im" + Vars.count));
+		System.out.println(MacroProcess.Master.findMine(Vars.imTempL, 'L'));
+		System.out.println(MacroProcess.Master.findMine(Vars.imTempR, 'R'));
+		Util.saveIm(Util.combineHorizontally(Vars.imTempL, Vars.imTempR), "im" + Vars.count, false);
 		System.out.println(Vars.count++);
 	}
 
@@ -142,7 +145,8 @@ public class Process {
 	 * Save metadata as CSV
 	 */
 	public static void saveMeta() {
-		Vars.imTemp = new byte[0][0];
+		Vars.imTempR = new byte[0][0];
+		Vars.imTempL = new byte[0][0];
 		Util.save(Vars.metaTemp, Vars.lastFile + "_meta");
 		Vars.metaTemp = new String[0][0];
 	}
@@ -170,7 +174,7 @@ public class Process {
 		metaInit();
 
 		// Check if first
-		if (Vars.imTemp == null)
+		if (Vars.imTempR == null)
 			init();
 
 		// Save if last of mission
@@ -199,12 +203,15 @@ public class Process {
 		}
 
 		// Combine left and right channels, previous image
-		if (Vars.imTemp.length != 0) {
-			Vars.imTemp = Util.combineVertically(Vars.imTemp, Util.combineHorizontally(Vars.left, Vars.right));
+		if (Vars.imTempR.length != 0) {
+			Vars.imTempR = Util.combineVertically(Vars.imTempR, Vars.right);
+			Vars.imTempL = Util.combineVertically(Vars.imTempL, Vars.left);
 			processIm();
-			Vars.imTemp = Util.combineHorizontally(Vars.left, Vars.right);
+			Vars.imTempR = Vars.right;
+			Vars.imTempL = Vars.left;
 		} else {
-			Vars.imTemp = Util.combineHorizontally(Vars.left, Vars.right);
+			Vars.imTempR = Vars.right;
+			Vars.imTempL = Vars.left;
 		}
 
 		// Add metadata to growing table

@@ -25,8 +25,12 @@ public class SonarProcessing {
 		ArrayList<String> totalFileList = Util.findAllFiles(dir, "mst");
 
 		// Extract data from each file
-		for (String x : totalFileList) 
-			Process.fileProcess(x);
+		for (String x : totalFileList)
+			try {
+				Process.fileProcess(x);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		Process.saveMeta();
 		System.out.println("Finished with all");
 	}

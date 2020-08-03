@@ -52,7 +52,8 @@ public class Vars {
 	public static long[] Fatho_timestamp_sec;
 
 	// Save
-	public static byte[][] imTemp;
+	public static byte[][] imTempL;
+	public static byte[][] imTempR;
 	public static String[][] metaTemp;
 	public static String lastFile;
 	public static String y;

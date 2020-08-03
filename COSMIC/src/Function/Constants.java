@@ -14,7 +14,7 @@ public class Constants {
 	/**
 	 * Change this to match your file input directory
 	 */
-	public static final String in_path =  "D:\\Mitali\\ML\\NPS20\\mstiff";
+	public static final String in_path =  "D:\\Mitali\\ML\\NPS20\\vm-share\\mstiff";
 		
 	/**
 	 * Type of image processing stage

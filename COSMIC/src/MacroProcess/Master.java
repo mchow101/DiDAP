@@ -2,6 +2,7 @@ package MacroProcess;
 
 import java.io.IOException;
 
+import Extract.Vars;
 import Function.Format;
 import Function.Util;
 
@@ -12,12 +13,10 @@ import Function.Util;
 public class Master {
 
 	static byte[][] im;
-	static String name;
-	static int dim = 200;
+	static int dim = 150;
 
-	public static boolean findMine(byte[][] imTemp, String nameSet) throws IOException {
-		init(imTemp, nameSet);
-
+	public static boolean findMine(byte[][] imTemp, char side) throws IOException {
+		im = imTemp;
 		boolean[][][] layers;
 		boolean[][] bmap;
 
@@ -40,22 +39,21 @@ public class Master {
 				int[] temp = Util.refitRect(r, c, bmap[0].length, bmap.length, imTemp[0].length, imTemp.length);
 				for (int x = temp[1]; x < (temp[3] < imTemp.length ? temp[3] : imTemp.length); x++) {
 					for (int y = temp[0]; y < (temp[2] < imTemp[0].length ? temp[2] : imTemp[0].length); y++) {
-						if (bmap[r][c]) imOut[x][y] = (byte)(Util.getByteVal(imTemp[x][y]) > 150 ? 255 : Util.getByteVal(imTemp[x][y]) + 100);
+						if (bmap[r][c]) { System.out.println(r); imOut[x][y] = (byte)(Util.getByteVal(imTemp[x][y]) > 150 ? 255 : Util.getByteVal(imTemp[x][y]) + 100); }
 						else imOut[x][y] = imTemp[x][y];
-//						System.out.println(x + " " + y);
-					}
+						
+//						if (layers[0][r][c]) imOut[x][y] = (byte)(Util.getByteVal(imTemp[x][y]) > 150 ? 255 : Util.getByteVal(imTemp[x][y]) + 100);
+//						else imOut[x][y] = imTemp[x][y];
+					}						
 				}
 			}
 		}
 		
-		Util.saveIm(imOut, nameSet, false);
+//		Util.saveIm(imOut, nameSet, false);
+		System.out.println(side == 'L');
+		if (side == 'L') Vars.imTempL = imOut;
+		else Vars.imTempR = imOut;
 		
 		return Function.Calc.containsTrue(bmap);
-	}
-
-	public static void init(byte[][] imSet, String nameSet) {
-
-		im = imSet;
-		name = nameSet;
 	}
 }

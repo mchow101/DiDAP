@@ -5,16 +5,15 @@ import java.io.IOException;
  *
  */
 public class MacroMaster {
+	
+	static byte[][] imL;
+	static byte[][] imR;
 
 	static byte[][] im;
-	static String name;
-	static int dim = 200;
-	
-	static boolean lastVal = false;
+	static int dim = 150;
 
-	public static byte[][] findMine(byte[][] imTemp, String nameSet) throws IOException {
-		init(imTemp, nameSet);
-
+	public static boolean findMine(byte[][] imTemp, char side) throws IOException {
+		im = imTemp;
 		boolean[][][] layers;
 		boolean[][] bmap;
 
@@ -34,27 +33,24 @@ public class MacroMaster {
 		for (int r = 0; r < bmap.length; r++) {
 			for (int c = 0; c < bmap[0].length; c++) {
 				bmap[r][c] = layers[0][r][c] && layers[1][r][c];
+				if(bmap[r][c]) System.out.println(r + ", " + c);
 				int[] temp = Util.refitRect(r, c, bmap[0].length, bmap.length, imTemp[0].length, imTemp.length);
 				for (int x = temp[1]; x < (temp[3] < imTemp.length ? temp[3] : imTemp.length); x++) {
 					for (int y = temp[0]; y < (temp[2] < imTemp[0].length ? temp[2] : imTemp[0].length); y++) {
-						if (bmap[r][c]) imOut[x][y] = (byte)(Util.getByteVal(imTemp[x][y]) > 150 ? 255 : Util.getByteVal(imTemp[x][y]) + 100);
+						if (bmap[r][c]) { imOut[x][y] = (byte)(Util.getByteVal(imTemp[x][y]) > 150 ? 255 : Util.getByteVal(imTemp[x][y]) + 100); }
 						else imOut[x][y] = imTemp[x][y];
-//						System.out.println(x + " " + y);
-					}
+						
+//						if (layers[0][r][c]) imOut[x][y] = (byte)(Util.getByteVal(imTemp[x][y]) > 150 ? 255 : Util.getByteVal(imTemp[x][y]) + 100);
+//						else imOut[x][y] = imTemp[x][y];
+					}						
 				}
 			}
 		}
 		
-		Util.saveIm(imOut, nameSet, false);
+//		Util.saveIm(imOut, nameSet, false);
+		if (side == 'L') imL = imOut;
+		else imR = imOut;
 		
-		lastVal = Calc.containsTrue(bmap);
-		
-		return imOut;
-	}
-
-	public static void init(byte[][] imSet, String nameSet) {
-
-		im = imSet;
-		name = nameSet;
+		return Calc.containsTrue(bmap);
 	}
 }
